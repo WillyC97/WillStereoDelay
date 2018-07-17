@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT name="WillStereoDelay" projectType="audioplug" buildStandalone="1"
+              jucerVersion="5.2.1">
+  <MAINGROUP id="gAKKzX" name="WillStereoDelay">
+    <GROUP id="{500409E5-FA9A-CD97-1F8B-F84661A6AE95}" name="GUI">
+      <GROUP id="{74D3D594-53F8-41F2-3F35-9DB3DC500291}" name="assets">
+        <FILE id="pXWfKN" name="SimpleEqualizer_bypass.png" compile="0" resource="1"
+              file="../../Downloads/JUCE_JAPAN_DEMO-master/vol2/AudioPlugin/SimpleEqualizer/Resources/SimpleEqualizer_bypass.png"/>
+        <FILE id="MA2RIV" name="SimpleEqualizer_knob.png" compile="0" resource="1"
+              file="../../Downloads/JUCE_JAPAN_DEMO-master/vol2/AudioPlugin/SimpleEqualizer/Resources/SimpleEqualizer_knob.png"/>
+        <FILE id="QH9LnD" name="sslknob.png" compile="0" resource="1" file="../../Downloads/JUCE_JAPAN_DEMO-master/vol2/AudioPlugin/SimpleEqualizer/Resources/sslknob.png"/>
+        <FILE id="exdWdH" name="switch_toggle_sub.png" compile="0" resource="1"
+              file="../../Downloads/JUCE_JAPAN_DEMO-master/vol2/AudioPlugin/SimpleEqualizer/Resources/switch_toggle_sub.png"/>
+      </GROUP>
+      <FILE id="TeprAM" name="FilmstripSlider.cpp" compile="1" resource="0"
+            file="Source/GUI/FilmstripSlider.cpp"/>
+      <FILE id="QJke2N" name="FilmstripSlider.h" compile="0" resource="0"
+            file="Source/GUI/FilmstripSlider.h"/>
+      <FILE id="dYNvdx" name="FilmstripToggleButton.cpp" compile="1" resource="0"
+            file="../../Downloads/JUCE_JAPAN_DEMO-master/vol2/AudioPlugin/SimpleEqualizer/Source/GUI/FilmstripToggleButton.cpp"/>
+      <FILE id="f2QE43" name="FilmstripToggleButton.h" compile="0" resource="0"
+            file="../../Downloads/JUCE_JAPAN_DEMO-master/vol2/AudioPlugin/SimpleEqualizer/Source/GUI/FilmstripToggleButton.h"/>
+      <FILE id="MVbmfA" name="RangeSlider.cpp" compile="1" resource="0" file="Source/GUI/RangeSlider.cpp"/>
+      <FILE id="cRL7Fs" name="RangeSlider.h" compile="0" resource="0" file="Source/GUI/RangeSlider.h"/>
+    </GROUP>
+    <GROUP id="{5F10C376-AD37-C12E-CA85-E66D77145755}" name="Source">
+      <FILE id="X4f2Po" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="ABesDk" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="u5ZqiH" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="g2aZFQ" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="vaLMJT" name="DigitalDelayLine.cpp" compile="1" resource="0"
+            file="Source/DigitalDelayLine.cpp"/>
+      <FILE id="crp43G" name="DigitalDelayLine.h" compile="0" resource="0"
+            file="Source/DigitalDelayLine.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_video" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../Developer/JUCE Latest/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../Developer/JUCE Latest/JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_FORCE_USE_LEGACY_PARAM_IDS="1"/>
+  <LIVE_SETTINGS>
+    <OSX/>
+  </LIVE_SETTINGS>
+</JUCERPROJECT>
