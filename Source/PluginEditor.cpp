@@ -255,7 +255,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
 
     //[/UserPreSize]
 
-    setSize (800, 450);
+    setSize (1020, 450);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -295,6 +295,24 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     crossfeedRight.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
     addAndMakeVisible(&crossfeedRight);
     crossfeedRight.addListener(this);
+    
+    tremoloRate.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
+    tremoloRate.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+    tremoloRate.setRange(0, 20, 0.1);
+    tremoloRate.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
+    tremoloRate.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
+    tremoloRate.setSkewFactorFromMidPoint(2);
+    addAndMakeVisible(&tremoloRate);
+    tremoloRate.addListener(this);
+    
+    tremoloAmount.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
+    tremoloAmount.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+    tremoloAmount.setRange(0, 0.5, 0.05);
+    tremoloAmount.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
+    tremoloAmount.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
+    addAndMakeVisible(&tremoloAmount);
+    tremoloAmount.addListener(this);
+    
 
 
 
@@ -376,6 +394,9 @@ void WillStereoDelayAudioProcessorEditor::resized()
 
     leftFdbckSlider.setBounds(48, 328, 64, 64);
     rightFdbckSlider.setBounds(550, 328, 64, 64);
+    
+    tremoloAmount.setBounds(800, 64, 64, 64);
+    tremoloRate.setBounds(800, 250, 64, 64);
 
 
         //Left Range Slider
@@ -452,6 +473,18 @@ void WillStereoDelayAudioProcessorEditor::sliderValueChanged (Slider* sliderThat
     {
         //[UserSliderCode_rightFdbckSlider] -- add your slider handling code here..
         *processor.rightCrossLevel_param = sliderThatWasMoved->getValue();
+        //[/UserSliderCode_rightFdbckSlider]
+    }
+    else if (sliderThatWasMoved == &tremoloAmount)
+    {
+        //[UserSliderCode_rightFdbckSlider] -- add your slider handling code here..
+        *processor.tremoloAmount_param = sliderThatWasMoved->getValue();
+        //[/UserSliderCode_rightFdbckSlider]
+    }
+    else if (sliderThatWasMoved == &tremoloRate)
+    {
+        //[UserSliderCode_rightFdbckSlider] -- add your slider handling code here..
+        *processor.tremoloRate_param = sliderThatWasMoved->getValue();
         //[/UserSliderCode_rightFdbckSlider]
     }
     else if (sliderThatWasMoved == &leftRangeSlider)
@@ -694,6 +727,9 @@ void WillStereoDelayAudioProcessorEditor::timerCallback()
 
     leftDelayTimeslider        ->setValue(*processor.leftDelayTime_param,    sendNotification);
     rightDelayTimeslider        ->setValue(*processor.rightDelayTime_param,   sendNotification);
+    
+    tremoloAmount.setValue(*processor.tremoloAmount_param, dontSendNotification);
+    tremoloRate.setValue(*processor.tremoloRate_param, dontSendNotification);
 
 }
 
@@ -713,7 +749,7 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public AudioProcessorEditor"
                  constructorParams="WillStereoDelayAudioProcessor&amp; p" variableInitialisers="AudioProcessorEditor (&amp;p), processor(p)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="800" initialHeight="450">
+                 fixedSize="1" initialWidth="1020" initialHeight="450">
   <BACKGROUND backgroundColour="ff323e44"/>
   <SLIDER name="Left Mix slider" id="15fba5bd03d265f9" memberName="leftMixSlider"
           virtualName="" explicitFocusOrder="0" pos="352 112 48 200" textboxoutline="8e989b"

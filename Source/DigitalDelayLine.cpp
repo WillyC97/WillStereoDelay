@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 
+
 inline float numSamplesFromMSf(const int sr, const float d_ms){
     return sr * d_ms * .001;
 }
@@ -128,6 +129,17 @@ void DigitalDelayLine::setCrossFeedVal(float crossfeedval)
 
 float DigitalDelayLine::next(float input, float channel)
 {
+    /////////////////Tremolo///////////////////////
+    calculateTremolo();
+    updateAngleDelta();
+    
+    
+    if (currentAngle >= (2 *M_PI))
+    {
+        currentAngle -= (2 *M_PI);
+    }
+    ////////////////////////////////////////////
+    
     float xn = input;
     
     float yn = buffer[readIndex];
@@ -162,8 +174,9 @@ float DigitalDelayLine::next(float input, float channel)
     yn = processChannelLPF(yn, channel);
     yn = processChannelHPF(yn, channel);
     
+   
     
-    float outputBuffer= wetLevel*yn + (1.0 - wetLevel)*xn;
+    float outputBuffer= wetLevel*(yn*tremoloMod) + (1.0 - wetLevel)*xn;
     
     // incremnent the pointers and wrap if necessary
     writeIndex++;
@@ -269,4 +282,29 @@ void DigitalDelayLine::calcFilterHPF(float samplerate, int cutoff)
     
 }
 
+///----------------------------------------------------------------- ///
+///======================= Tremolo ====================== ///
+///----------------------------------------------------------------- ///
+void DigitalDelayLine::setTremoloRate(float rate)
+{
+    tremoloRate = rate;
+}
+
+void DigitalDelayLine::setTremoloAmount(float amount)
+{
+    tremoloAmount = amount;
+}
+
+void DigitalDelayLine::updateAngleDelta()
+{
+    intervalsPerCycle = tremoloRate / sampleRate; //sinewave coeffcient generation for standard vibrato shape
+    angleDelta = intervalsPerCycle * (2 * M_PI);
+}
+
+void DigitalDelayLine::calculateTremolo()
+{
+    float offset = 1- tremoloAmount;
+    tremoloMod = (offset + tremoloAmount *(sin(currentAngle)));
+    currentAngle += angleDelta;
+}
 

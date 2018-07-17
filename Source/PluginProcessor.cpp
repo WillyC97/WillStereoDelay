@@ -38,6 +38,8 @@ WillStereoDelayAudioProcessor::WillStereoDelayAudioProcessor()
     addParameter(rightHPF_param = new AudioParameterInt("RightHPF", "Right HPF", 20, 20000, 20));
     addParameter(leftCrossLevel_param = new AudioParameterInt("LeftCross", "Left Cross", 0, 100, 0));
     addParameter(rightCrossLevel_param = new AudioParameterInt("RightCross", "Right Feedback", 0, 100, 0));
+    addParameter(tremoloAmount_param = new AudioParameterFloat("TremoloAmount", "Tremolo Amount", 0, 1, 0));
+    addParameter(tremoloRate_param = new AudioParameterFloat("TremoloRate", "Tremolo Rate", 0, 20, 0));
 
 
 
@@ -121,6 +123,9 @@ void WillStereoDelayAudioProcessor::prepareToPlay (double sampleRate, int sample
     
     delay_left.setSampleRate(sampleRate);
     delay_right.setSampleRate(sampleRate);
+    
+    delay_left.updateAngleDelta();
+    delay_right.updateAngleDelta();
     
     SampleRate = sampleRate;
     
@@ -218,6 +223,13 @@ void WillStereoDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, Mi
         
         delay_left.setCurrentFeedbackInput(delay_right.getCurrentFeedbackOutput());
         delay_right.setCurrentFeedbackInput(delay_left.getCurrentFeedbackOutput());
+        
+        delay_left.setTremoloAmount(*tremoloAmount_param);
+        delay_right.setTremoloAmount(*tremoloAmount_param);
+
+        delay_left.setTremoloRate(*tremoloRate_param);
+        delay_right.setTremoloRate(*tremoloRate_param);
+        
         
         
             
