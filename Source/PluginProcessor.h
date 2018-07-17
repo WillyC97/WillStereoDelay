@@ -70,6 +70,8 @@ public:
     AudioParameterInt* rightHPF_param;
     AudioParameterInt* leftCrossLevel_param;
     AudioParameterInt* rightCrossLevel_param;
+    AudioParameterFloat* tremoloAmount_param;
+    AudioParameterFloat* tremoloRate_param;
     
     float ChannelLeftBuffer;
     float ChannelRightBuffer;

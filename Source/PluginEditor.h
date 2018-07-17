@@ -104,6 +104,9 @@ private:
     FilmstripSlider crossfeedRight;
     FilmstripSlider leftFdbckSlider;
     FilmstripSlider rightFdbckSlider;
+    FilmstripSlider tremoloAmount;
+    FilmstripSlider tremoloRate;
+    
     Image image_sslRotary;
     Image image_bypass;
     RangeSlider leftRangeSlider;

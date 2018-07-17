@@ -67,6 +67,22 @@ public:
     double z1_ALP[2], z2_ALP[2];
     double z1_AHP[2], z2_AHP[2];
     
+    //Tremolo Stuff
+    void updateAngleDelta();
+    void calculateTremolo();
+    void setTremoloRate(float rate);
+    float tremoloRate;
+    void setTremoloAmount(float amount);
+    float tremoloAmount;
+    
+    float tremoloMod;
+    float angleDelta;
+    float currentAngle{0.0};
+    float intervalsPerCycle;
+    
+    
+    
+    
  
     
 
