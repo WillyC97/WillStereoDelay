@@ -230,6 +230,9 @@ void WillStereoDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, Mi
         delay_left.setTremoloRate(*tremoloRate_param);
         delay_right.setTremoloRate(*tremoloRate_param);
         
+        delay_left.setPostPreMixToggle(postPreMix);
+        delay_right.setPostPreMixToggle(postPreMix);
+        
         
         
             

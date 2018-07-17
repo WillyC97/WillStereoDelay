@@ -79,8 +79,10 @@ public:
     float angleDelta;
     float currentAngle{0.0};
     float intervalsPerCycle;
+    //
     
-    
+    void setPostPreMixToggle(int val);
+    int postPreMix;
     
     
  
