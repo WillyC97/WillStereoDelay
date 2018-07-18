@@ -73,6 +73,7 @@ public:
     };
 
     float setDelayFraction(int comboBoxVal);
+    void setComboBoxText(float sliderVal);
     bool toggleState;
     //[/UserMethods]
 

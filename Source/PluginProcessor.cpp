@@ -128,10 +128,7 @@ void WillStereoDelayAudioProcessor::prepareToPlay (double sampleRate, int sample
     delay_right.updateAngleDelta();
     
     SampleRate = sampleRate;
-    
-    
-    
-    
+   
 }
 
 
@@ -240,13 +237,14 @@ void WillStereoDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, Mi
             float* channelDataRight = buffer.getWritePointer(1);
             //float* channelData = buffer.getWritePointer (channel);
         
-        float leftChannelInput;
-        float rightChannelInput;
+        float leftChannelInput = channelDataLeft[i];
+        float rightChannelInput = channelDataRight[i];
         
         switch (leftInputSelection) {
             case 1: leftChannelInput = channelDataLeft[i];break;
             case 2: leftChannelInput = channelDataRight[i];break;
-            case 3: leftChannelInput = 0;break;
+            case 3: leftChannelInput = channelDataLeft[i] + channelDataRight[i];break;
+            case 4: leftChannelInput = 0;break;
             default:
                 break;
         }
@@ -254,7 +252,9 @@ void WillStereoDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, Mi
         switch (rightInputSelection) {
             case 1: rightChannelInput = channelDataRight[i];break;
             case 2: rightChannelInput = channelDataLeft[i];break;
-            case 3: rightChannelInput = 0;break;
+            case 3: leftChannelInput = channelDataLeft[i] + channelDataRight[i];break;
+            case 4: rightChannelInput = 0;break;
+
             default:
                 break;
         }
