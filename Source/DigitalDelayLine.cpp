@@ -125,6 +125,10 @@ void DigitalDelayLine::setCrossFeedVal(float crossfeedval)
 {
     crossFeedbackLevel = crossfeedval;
 }
+void DigitalDelayLine::setPostPreMixToggle(int val)
+{
+    postPreMix = val;
+}
 //-------------------------------------------
 
 float DigitalDelayLine::next(float input, float channel)
@@ -173,10 +177,20 @@ float DigitalDelayLine::next(float input, float channel)
     
     yn = processChannelLPF(yn, channel);
     yn = processChannelHPF(yn, channel);
+    float outputBuffer = wetLevel*(yn*tremoloMod) + (1.0 - wetLevel)*xn;
     
-   
+    switch (postPreMix) {
+        case 1:outputBuffer = wetLevel*(yn*tremoloMod) + (1.0 - wetLevel)*(xn*tremoloMod);
+            
+            break;
+        case 2: outputBuffer = wetLevel*(yn*tremoloMod) + (1.0 - wetLevel)*xn;
+            
+            break;
+        default:
+            break;
+    }
     
-    float outputBuffer= wetLevel*(yn*tremoloMod) + (1.0 - wetLevel)*xn;
+    
     
     // incremnent the pointers and wrap if necessary
     writeIndex++;

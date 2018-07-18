@@ -83,6 +83,8 @@ public:
     double BPM;
     int leftInputSelection;
     int rightInputSelection;
+    
+    int postPreMix;
 
 
 

@@ -19,6 +19,7 @@
 
 //[Headers] You can add your own extra header files here...
 #include "PluginProcessor.h"
+#include "DigitalDelayLine.h"
 //[/Headers]
 
 #include "PluginEditor.h"
@@ -250,6 +251,20 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
 
     rightInputSelector->setBounds (728, 8, 60, 24);
 
+    addAndMakeVisible (mainButton = new TextButton ("main button"));
+    mainButton->setButtonText (TRANS("Main"));
+    mainButton->setRadioGroupId (1001);
+    mainButton->addListener (this);
+
+    mainButton->setBounds (808, 248, 66, 24);
+
+    addAndMakeVisible (feedbackButton = new TextButton ("feedback button"));
+    feedbackButton->setButtonText (TRANS("feedback"));
+    feedbackButton->setRadioGroupId (1001);
+    feedbackButton->addListener (this);
+
+    feedbackButton->setBounds (880, 248, 66, 24);
+
 
     //[UserPreSize]
 
@@ -259,6 +274,11 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
 
 
     //[Constructor] You can add your own custom stuff here..
+    mainButton->setClickingTogglesState (true);
+    feedbackButton->setClickingTogglesState(true);
+    
+ 
+    
     startTimer (30);
 
     Image image_sslRotary = ImageCache::getFromMemory(BinaryData::sslknob_png, BinaryData::sslknob_pngSize);
@@ -295,7 +315,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     crossfeedRight.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
     addAndMakeVisible(&crossfeedRight);
     crossfeedRight.addListener(this);
-    
+
     tremoloRate.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     tremoloRate.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
     tremoloRate.setRange(0, 20, 0.1);
@@ -304,7 +324,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     tremoloRate.setSkewFactorFromMidPoint(2);
     addAndMakeVisible(&tremoloRate);
     tremoloRate.addListener(this);
-    
+
     tremoloAmount.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     tremoloAmount.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
     tremoloAmount.setRange(0, 0.5, 0.05);
@@ -312,7 +332,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     tremoloAmount.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
     addAndMakeVisible(&tremoloAmount);
     tremoloAmount.addListener(this);
-    
+
 
 
 
@@ -323,6 +343,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
         Bypass.setImage(image_bypass, image_bypass.getWidth() / image_bypass.getHeight());
         addAndMakeVisible(&Bypass);
         Bypass.addListener(this);
+    
 
     //left range slider
         addAndMakeVisible(&leftRangeSlider);
@@ -360,6 +381,8 @@ WillStereoDelayAudioProcessorEditor::~WillStereoDelayAudioProcessorEditor()
     rightDelayTimeslider = nullptr;
     leftInputSelector = nullptr;
     rightInputSelector = nullptr;
+    mainButton = nullptr;
+    feedbackButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -394,9 +417,9 @@ void WillStereoDelayAudioProcessorEditor::resized()
 
     leftFdbckSlider.setBounds(48, 328, 64, 64);
     rightFdbckSlider.setBounds(550, 328, 64, 64);
-    
+
     tremoloAmount.setBounds(800, 64, 64, 64);
-    tremoloRate.setBounds(800, 250, 64, 64);
+    tremoloRate.setBounds(800, 200, 64, 64);
 
 
         //Left Range Slider
@@ -571,6 +594,18 @@ void WillStereoDelayAudioProcessorEditor::buttonClicked (Button* buttonThatWasCl
         comboBoxRight->setSelectedId(3);
         //[/UserButtonCode_semiquaverButtonRight]
     }
+    else if (buttonThatWasClicked == mainButton)
+    {
+        //[UserButtonCode_mainButton] -- add your button handler code here..
+        processor.postPreMix = 1;
+        //[/UserButtonCode_mainButton]
+    }
+    else if (buttonThatWasClicked == feedbackButton)
+    {
+        //[UserButtonCode_feedbackButton] -- add your button handler code here..
+        processor.postPreMix = 2;
+        //[/UserButtonCode_feedbackButton]
+    }
 
     //[UserbuttonClicked_Post]
     else if (buttonThatWasClicked == &Bypass)
@@ -727,7 +762,7 @@ void WillStereoDelayAudioProcessorEditor::timerCallback()
 
     leftDelayTimeslider        ->setValue(*processor.leftDelayTime_param,    sendNotification);
     rightDelayTimeslider        ->setValue(*processor.rightDelayTime_param,   sendNotification);
-    
+
     tremoloAmount.setValue(*processor.tremoloAmount_param, dontSendNotification);
     tremoloRate.setValue(*processor.tremoloRate_param, dontSendNotification);
 
@@ -859,6 +894,12 @@ BEGIN_JUCER_METADATA
             virtualName="" explicitFocusOrder="0" pos="728 8 60 24" editable="0"
             layout="33" items="Right&#10;Left&#10;None" textWhenNonSelected="Right"
             textWhenNoItems="(no choices)"/>
+  <TEXTBUTTON name="main button" id="3b4d08f5c2f2f175" memberName="mainButton"
+              virtualName="" explicitFocusOrder="0" pos="808 248 66 24" buttonText="Main"
+              connectedEdges="0" needsCallback="1" radioGroupId="1001"/>
+  <TEXTBUTTON name="feedback button" id="12cff3675bab067e" memberName="feedbackButton"
+              virtualName="" explicitFocusOrder="0" pos="880 248 66 24" buttonText="feedback"
+              connectedEdges="0" needsCallback="1" radioGroupId="1001"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -106,7 +106,7 @@ private:
     FilmstripSlider rightFdbckSlider;
     FilmstripSlider tremoloAmount;
     FilmstripSlider tremoloRate;
-    
+
     Image image_sslRotary;
     Image image_bypass;
     RangeSlider leftRangeSlider;
@@ -144,6 +144,8 @@ private:
     ScopedPointer<Slider> rightDelayTimeslider;
     ScopedPointer<ComboBox> leftInputSelector;
     ScopedPointer<ComboBox> rightInputSelector;
+    ScopedPointer<TextButton> mainButton;
+    ScopedPointer<TextButton> feedbackButton;
 
 
     //==============================================================================
