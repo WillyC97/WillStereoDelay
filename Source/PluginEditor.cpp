@@ -349,6 +349,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
 
     leftDelayTimeslider->setSkewFactorFromMidPoint(40000);
     rightDelayTimeslider->setSkewFactorFromMidPoint(40000);
+
     //[/Constructor]
 }
 
@@ -458,14 +459,14 @@ void WillStereoDelayAudioProcessorEditor::sliderValueChanged (Slider* sliderThat
     {
         //[UserSliderCode_leftDelayTimeslider] -- add your slider handling code here..
         *processor.leftDelayTime_param = sliderThatWasMoved->getValue();
-        setComboBoxText(sliderThatWasMoved->getValue());
+        setComboBoxText(sliderThatWasMoved->getValue(), comboBoxLeft);
         //[/UserSliderCode_leftDelayTimeslider]
     }
     else if (sliderThatWasMoved == rightDelayTimeslider)
     {
         //[UserSliderCode_rightDelayTimeslider] -- add your slider handling code here..
          *processor.rightDelayTime_param = sliderThatWasMoved->getValue();
-        setComboBoxText(sliderThatWasMoved->getValue());
+        setComboBoxText(sliderThatWasMoved->getValue(), comboBoxRight);
         //[/UserSliderCode_rightDelayTimeslider]
     }
 
@@ -711,43 +712,43 @@ float WillStereoDelayAudioProcessorEditor::setDelayFraction(int comboBoxVal)
     }
 }
 
-void WillStereoDelayAudioProcessorEditor::setComboBoxText(float sliderVal)
+void WillStereoDelayAudioProcessorEditor::setComboBoxText(float sliderVal, ComboBox* combobox)
 {
    if (sliderVal > 9996 && sliderVal < 11250)
-       comboBoxLeft->setSelectedId(1, dontSendNotification);
+       combobox->setSelectedId(1, dontSendNotification);
    
    else if (sliderVal > 11250 && sliderVal < 15000)
-            comboBoxLeft->setSelectedId(2, dontSendNotification);
+            combobox->setSelectedId(2, dontSendNotification);
   
    else if (sliderVal > 15000 && sliderVal < 19272)
-       comboBoxLeft->setSelectedId(3, dontSendNotification);
+       combobox->setSelectedId(3, dontSendNotification);
    
    else if (sliderVal > 19272 && sliderVal < 22500)
-       comboBoxLeft->setSelectedId(4, dontSendNotification);
+       combobox->setSelectedId(4, dontSendNotification);
     
    else if (sliderVal > 22500 && sliderVal < 30000)
-       comboBoxLeft->setSelectedId(5, dontSendNotification);
+       combobox->setSelectedId(5, dontSendNotification);
     
    else if (sliderVal > 30000 && sliderVal < 39996)
-       comboBoxLeft->setSelectedId(6, dontSendNotification);
+       combobox->setSelectedId(6, dontSendNotification);
     
    else if (sliderVal > 39996 && sliderVal < 45000)
-       comboBoxLeft->setSelectedId(7, dontSendNotification);
+       combobox->setSelectedId(7, dontSendNotification);
     
    else if (sliderVal > 45000 && sliderVal < 60000)
-       comboBoxLeft->setSelectedId(8, dontSendNotification);
+       combobox->setSelectedId(8, dontSendNotification);
     
    else if (sliderVal > 60000 && sliderVal < 79992)
-       comboBoxLeft->setSelectedId(9, dontSendNotification);
+       combobox->setSelectedId(9, dontSendNotification);
     
    else if (sliderVal > 79992 && sliderVal < 90000)
-       comboBoxLeft->setSelectedId(10, dontSendNotification);
+       combobox->setSelectedId(10, dontSendNotification);
     
    else if (sliderVal > 90000 && sliderVal < 120000)
-       comboBoxLeft->setSelectedId(11, dontSendNotification);
+       combobox->setSelectedId(11, dontSendNotification);
     
    else if (sliderVal > 12000)
-       comboBoxLeft->setSelectedId(12, dontSendNotification);
+       combobox->setSelectedId(12, dontSendNotification);
 }
 
 
