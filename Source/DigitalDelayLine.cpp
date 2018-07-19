@@ -129,9 +129,17 @@ void DigitalDelayLine::setPostPreMixToggle(int val)
 {
     postPreMix = val;
 }
+void DigitalDelayLine::setBitdepth(int bd)
+{
+    bitDepth = bd;
+}
+void DigitalDelayLine::setBitRate(int br)
+{
+    rateDivide = br;
+}
 //-------------------------------------------
 
-float DigitalDelayLine::next(float input, float channel)
+float DigitalDelayLine::next(float input, float channel, int i)
 {
     /////////////////Tremolo///////////////////////
     calculateTremolo();
@@ -143,6 +151,10 @@ float DigitalDelayLine::next(float input, float channel)
         currentAngle -= (2 *M_PI);
     }
     ////////////////////////////////////////////
+    
+    
+    
+    
     
     float xn = input;
     
@@ -177,6 +189,24 @@ float DigitalDelayLine::next(float input, float channel)
     
     yn = processChannelLPF(yn, channel);
     yn = processChannelHPF(yn, channel);
+    
+    ////////////////Bit Crusher////////////
+    float totalQLevels = powf(2, bitDepth);
+    float remainder = fmodf(yn, 1/totalQLevels);
+    
+    // Quantize ...
+   yn = yn - remainder;
+    
+    if (rateDivide > 1)
+    {
+        if (i%rateDivide != 0) yn = buffer[readIndex - readIndex%rateDivide];
+    }
+    
+    ///////////////////////////////////////////////////////////
+    
+    
+    
+    
     float outputBuffer = wetLevel*(yn*tremoloMod) + (1.0 - wetLevel)*xn;
     
     switch (postPreMix) {
@@ -321,4 +351,9 @@ void DigitalDelayLine::calculateTremolo()
     tremoloMod = (offset + tremoloAmount *(sin(currentAngle)));
     currentAngle += angleDelta;
 }
+
+
+
+
+
 

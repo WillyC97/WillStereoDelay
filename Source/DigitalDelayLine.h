@@ -40,14 +40,17 @@ public:
     void setFeedback(float f);
     void setDelayTime(float dt);
     void setMixlevel(float mix);
+    void setBitdepth(int bd);
+    void setBitRate(int br);
     //void setCrossFeeedbackLevel(float cfb);
-    float next(float input, float channel);
+    float next(float input, float channel, int i);
     float linInterp(float x1, float x2, float y1, float y2, float x);
 
     float sampleRate;
     float delayInSamples, fraction, delayInMs, MAX_DELAY_MS, wetLevel, feedback, crossFeedbackLevel;
     float feedBackIn;
-    
+    int bitDepth;
+    int rateDivide;
     
    
     

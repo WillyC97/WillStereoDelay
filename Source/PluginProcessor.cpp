@@ -40,7 +40,8 @@ WillStereoDelayAudioProcessor::WillStereoDelayAudioProcessor()
     addParameter(rightCrossLevel_param = new AudioParameterInt("RightCross", "Right Feedback", 0, 100, 0));
     addParameter(tremoloAmount_param = new AudioParameterFloat("TremoloAmount", "Tremolo Amount", 0, 1, 0));
     addParameter(tremoloRate_param = new AudioParameterFloat("TremoloRate", "Tremolo Rate", 0, 20, 0));
-
+    addParameter(bitDepth_param = new AudioParameterInt("bitDepth", "Bit Depth", 4, 32, 24));
+    addParameter(bitRate_param = new AudioParameterInt("bitRate", "Bit Rate", 1, 50, 1));
 
 
 }
@@ -230,7 +231,11 @@ void WillStereoDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, Mi
         delay_left.setPostPreMixToggle(postPreMix);
         delay_right.setPostPreMixToggle(postPreMix);
         
+        delay_left.setBitdepth(*bitDepth_param);
+        delay_right.setBitdepth(*bitDepth_param);
         
+        delay_left.setBitRate(*bitRate_param);
+        delay_right.setBitRate(*bitRate_param);
         
             
             float* channelDataLeft = buffer.getWritePointer(0);
@@ -261,7 +266,7 @@ void WillStereoDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, Mi
         
         
         
-        channelDataLeft[i] = delay_left.next(leftChannelInput, 0);
+        channelDataLeft[i] = delay_left.next(leftChannelInput, 0, i);
         
         
             
@@ -272,7 +277,7 @@ void WillStereoDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, Mi
             
             //Stereo In , Stereo Out
             if(getTotalNumInputChannels() == 2 && getTotalNumOutputChannels() == 2){
-                channelDataRight[i] = delay_right.next(rightChannelInput, 1);
+                channelDataRight[i] = delay_right.next(rightChannelInput, 1, i);
                 
             }
             
