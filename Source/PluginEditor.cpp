@@ -234,10 +234,11 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     leftInputSelector->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     leftInputSelector->addItem (TRANS("Left"), 1);
     leftInputSelector->addItem (TRANS("Right"), 2);
-    leftInputSelector->addItem (TRANS("None"), 3);
+    leftInputSelector->addItem (TRANS("L+R"), 3);
+    leftInputSelector->addItem (TRANS("None"), 4);
     leftInputSelector->addListener (this);
 
-    leftInputSelector->setBounds (8, 8, 60, 24);
+    leftInputSelector->setBounds (8, 8, 72, 24);
 
     addAndMakeVisible (rightInputSelector = new ComboBox ("right input selector"));
     rightInputSelector->setEditableText (false);
@@ -246,24 +247,56 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     rightInputSelector->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     rightInputSelector->addItem (TRANS("Right"), 1);
     rightInputSelector->addItem (TRANS("Left"), 2);
-    rightInputSelector->addItem (TRANS("None"), 3);
+    rightInputSelector->addItem (TRANS("R+L"), 3);
+    rightInputSelector->addItem (TRANS("None"), 4);
     rightInputSelector->addListener (this);
 
-    rightInputSelector->setBounds (728, 8, 60, 24);
+    rightInputSelector->setBounds (720, 8, 68, 24);
 
     addAndMakeVisible (mainButton = new TextButton ("main button"));
     mainButton->setButtonText (TRANS("Main"));
     mainButton->setRadioGroupId (1001);
     mainButton->addListener (this);
 
-    mainButton->setBounds (808, 248, 66, 24);
+    mainButton->setBounds (832, 328, 66, 24);
 
     addAndMakeVisible (feedbackButton = new TextButton ("feedback button"));
     feedbackButton->setButtonText (TRANS("feedback"));
     feedbackButton->setRadioGroupId (1001);
     feedbackButton->addListener (this);
 
-    feedbackButton->setBounds (880, 248, 66, 24);
+    feedbackButton->setBounds (904, 328, 66, 24);
+
+    addAndMakeVisible (deviationLabelLeft = new Label ("deviation label left",
+                                                       String()));
+    deviationLabelLeft->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    deviationLabelLeft->setJustificationType (Justification::centredLeft);
+    deviationLabelLeft->setEditable (false, false, false);
+    deviationLabelLeft->setColour (TextEditor::textColourId, Colours::black);
+    deviationLabelLeft->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    deviationLabelLeft->setBounds (216, 96, 104, 24);
+
+    addAndMakeVisible (deviationLabelRight = new Label ("deviation label right",
+                                                        String()));
+    deviationLabelRight->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    deviationLabelRight->setJustificationType (Justification::centredLeft);
+    deviationLabelRight->setEditable (false, false, false);
+    deviationLabelRight->setColour (TextEditor::textColourId, Colours::black);
+    deviationLabelRight->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    deviationLabelRight->setBounds (680, 96, 104, 24);
+
+    addAndMakeVisible (effectCombobox = new ComboBox ("effect combo box"));
+    effectCombobox->setEditableText (false);
+    effectCombobox->setJustificationType (Justification::centredLeft);
+    effectCombobox->setTextWhenNothingSelected (TRANS("Effects"));
+    effectCombobox->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    effectCombobox->addItem (TRANS("Tremolo"), 1);
+    effectCombobox->addItem (TRANS("Bitcrusher"), 2);
+    effectCombobox->addListener (this);
+
+    effectCombobox->setBounds (840, 8, 128, 24);
 
 
     //[UserPreSize]
@@ -276,16 +309,14 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     //[Constructor] You can add your own custom stuff here..
     mainButton->setClickingTogglesState (true);
     feedbackButton->setClickingTogglesState(true);
-    
- 
-    
+
     startTimer (30);
 
     Image image_sslRotary = ImageCache::getFromMemory(BinaryData::sslknob_png, BinaryData::sslknob_pngSize);
 
     leftFdbckSlider.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     leftFdbckSlider.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-    leftFdbckSlider.setRange(0, 100);
+    leftFdbckSlider.setRange(0, 100, 1);
     leftFdbckSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
     leftFdbckSlider.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
     addAndMakeVisible(&leftFdbckSlider);
@@ -293,16 +324,15 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
 
     rightFdbckSlider.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     rightFdbckSlider.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-    rightFdbckSlider.setRange(0, 100);
+    rightFdbckSlider.setRange(0, 100, 1);
     rightFdbckSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
     rightFdbckSlider.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
     addAndMakeVisible(&rightFdbckSlider);
     rightFdbckSlider.addListener(this);
 
-
     crossfeedLeft.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     crossfeedLeft.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-    crossfeedLeft.setRange(0, 100);
+    crossfeedLeft.setRange(0, 100, 1);
     crossfeedLeft.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
     crossfeedLeft.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
     addAndMakeVisible(&crossfeedLeft);
@@ -310,7 +340,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
 
     crossfeedRight.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     crossfeedRight.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-    crossfeedRight.setRange(0, 100);
+    crossfeedRight.setRange(0, 100, 1);
     crossfeedRight.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
     crossfeedRight.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
     addAndMakeVisible(&crossfeedRight);
@@ -321,9 +351,10 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     tremoloRate.setRange(0, 20, 0.1);
     tremoloRate.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
     tremoloRate.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
-    tremoloRate.setSkewFactorFromMidPoint(2);
+    tremoloRate.setSkewFactorFromMidPoint(3.0);
     addAndMakeVisible(&tremoloRate);
     tremoloRate.addListener(this);
+    tremoloRate.setVisible(false);
 
     tremoloAmount.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     tremoloAmount.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
@@ -332,18 +363,34 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     tremoloAmount.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
     addAndMakeVisible(&tremoloAmount);
     tremoloAmount.addListener(this);
-
-
-
-
-
+    tremoloAmount.setVisible(false);
+    
+    bitRateSlider.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
+    bitRateSlider.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+    bitRateSlider.setRange(1, 50, 1);
+    bitRateSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
+    bitRateSlider.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
+    addAndMakeVisible(&bitRateSlider);
+    bitRateSlider.addListener(this);
+    bitRateSlider.setVisible(false);
+   
+    
+    
+    bitDepthSlider.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
+    bitDepthSlider.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+    bitDepthSlider.setRange(4, 24, 1);
+    bitDepthSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
+    bitDepthSlider.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
+    addAndMakeVisible(&bitDepthSlider);
+    bitDepthSlider.addListener(this);
+    bitDepthSlider.setVisible(false);
 
 //time sync button
         Image image_bypass = ImageCache::getFromMemory(BinaryData::switch_toggle_sub_png, BinaryData::SimpleEqualizer_bypass_pngSize);
         Bypass.setImage(image_bypass, image_bypass.getWidth() / image_bypass.getHeight());
         addAndMakeVisible(&Bypass);
         Bypass.addListener(this);
-    
+
 
     //left range slider
         addAndMakeVisible(&leftRangeSlider);
@@ -355,6 +402,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
 
     leftDelayTimeslider->setSkewFactorFromMidPoint(40000);
     rightDelayTimeslider->setSkewFactorFromMidPoint(40000);
+
     //[/Constructor]
 }
 
@@ -383,9 +431,13 @@ WillStereoDelayAudioProcessorEditor::~WillStereoDelayAudioProcessorEditor()
     rightInputSelector = nullptr;
     mainButton = nullptr;
     feedbackButton = nullptr;
+    deviationLabelLeft = nullptr;
+    deviationLabelRight = nullptr;
+    effectCombobox = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
+
     //[/Destructor]
 }
 
@@ -415,20 +467,24 @@ void WillStereoDelayAudioProcessorEditor::resized()
     crossfeedLeft.setBounds (224, 328, 64, 64);
     crossfeedRight.setBounds (650, 328, 64, 64);
 
+        //feedback rotaries
     leftFdbckSlider.setBounds(48, 328, 64, 64);
     rightFdbckSlider.setBounds(550, 328, 64, 64);
 
+        //tremolo rotaries
     tremoloAmount.setBounds(800, 64, 64, 64);
-    tremoloRate.setBounds(800, 200, 64, 64);
+    tremoloRate.setBounds(800, 160, 64, 64);
 
+    bitRateSlider.setBounds(900, 64, 64, 64);
+    bitDepthSlider.setBounds(900, 160, 64, 64);
 
-        //Left Range Slider
+        //Left hi-low pass Slider
     leftRangeSlider.setBounds(68, 220, 180, 40);
 	leftRangeSlider.setTextBoxStyle(RangeSlider::NoTextBox, false, 80, 20);
     leftRangeSlider.setRange(20, 20000);
     leftRangeSlider.setSkewFactorFromMidPoint(1000);
 
-        //right range slider
+        //right hi-low pass slider
     rightRangeSlider.setBounds(500, 220, 180, 40);
     rightRangeSlider.setTextBoxStyle(RangeSlider::NoTextBox, false, 80, 20);
     rightRangeSlider.setRange(20, 20000);
@@ -462,6 +518,7 @@ void WillStereoDelayAudioProcessorEditor::sliderValueChanged (Slider* sliderThat
     {
         //[UserSliderCode_leftDelayTimeslider] -- add your slider handling code here..
         *processor.leftDelayTime_param = sliderThatWasMoved->getValue();
+        deviationValueLeft = setComboBoxText(sliderThatWasMoved->getValue(), comboBoxLeft);
 
         //[/UserSliderCode_leftDelayTimeslider]
     }
@@ -469,6 +526,9 @@ void WillStereoDelayAudioProcessorEditor::sliderValueChanged (Slider* sliderThat
     {
         //[UserSliderCode_rightDelayTimeslider] -- add your slider handling code here..
          *processor.rightDelayTime_param = sliderThatWasMoved->getValue();
+        deviationValueRight = setComboBoxText(sliderThatWasMoved->getValue(), comboBoxRight);
+
+
         //[/UserSliderCode_rightDelayTimeslider]
     }
 
@@ -510,6 +570,19 @@ void WillStereoDelayAudioProcessorEditor::sliderValueChanged (Slider* sliderThat
         *processor.tremoloRate_param = sliderThatWasMoved->getValue();
         //[/UserSliderCode_rightFdbckSlider]
     }
+    else if (sliderThatWasMoved == &bitDepthSlider)
+    {
+        //[UserSliderCode_rightFdbckSlider] -- add your slider handling code here..
+        *processor.bitDepth_param = sliderThatWasMoved->getValue();
+        //[/UserSliderCode_rightFdbckSlider]
+    }
+    else if (sliderThatWasMoved == &bitRateSlider)
+    {
+        //[UserSliderCode_rightFdbckSlider] -- add your slider handling code here..
+        *processor.bitRate_param = sliderThatWasMoved->getValue();
+
+        //[/UserSliderCode_rightFdbckSlider]
+    }
     else if (sliderThatWasMoved == &leftRangeSlider)
     {
         *processor.leftLPF_param = sliderThatWasMoved->getMaxValue();
@@ -533,7 +606,7 @@ void WillStereoDelayAudioProcessorEditor::buttonClicked (Button* buttonThatWasCl
     if (buttonThatWasClicked == crotchetButton)
     {
         //[UserButtonCode_crotchetButton] -- add your button handler code here..
-        *processor.leftDelayTime_param = 60000;
+//        *processor.leftDelayTime_param = 60000;
         comboBoxLeft->setSelectedId(9);
         //processor.leftDelayTime_param = processor.noteValDelayL;
         //[/UserButtonCode_crotchetButton]
@@ -541,7 +614,7 @@ void WillStereoDelayAudioProcessorEditor::buttonClicked (Button* buttonThatWasCl
     else if (buttonThatWasClicked == minimButton)
     {
         //[UserButtonCode_minimButton] -- add your button handler code here..
-        *processor.leftDelayTime_param = 120000;
+//        *processor.leftDelayTime_param = 120000;
 
         comboBoxLeft->setSelectedId(12);
 //        leftDelayTimeslider->setValue(processor.noteValDelayL);
@@ -551,7 +624,7 @@ void WillStereoDelayAudioProcessorEditor::buttonClicked (Button* buttonThatWasCl
     else if (buttonThatWasClicked == quaverButton)
     {
         //[UserButtonCode_quaverButton] -- add your button handler code here..
-        *processor.leftDelayTime_param = 30000;
+//        *processor.leftDelayTime_param = 30000;
         comboBoxLeft->setSelectedId(6);
 
 //        leftDelayTimeslider->setValue(processor.noteValDelayL);
@@ -561,7 +634,7 @@ void WillStereoDelayAudioProcessorEditor::buttonClicked (Button* buttonThatWasCl
     else if (buttonThatWasClicked == semiquaverButton)
     {
         //[UserButtonCode_semiquaverButton] -- add your button handler code here..
-        *processor.leftDelayTime_param = 15000;
+//        *processor.leftDelayTime_param = 15000;
         comboBoxLeft->setSelectedId(3);
 //
         //[/UserButtonCode_semiquaverButton]
@@ -665,6 +738,7 @@ void WillStereoDelayAudioProcessorEditor::comboBoxChanged (ComboBox* comboBoxTha
         //[UserComboBoxCode_comboBoxLeft] -- add your combo box handling code here..
        comboboxValLeft = comboBoxThatHasChanged->getSelectedId();
         *processor.leftDelayTime_param = setDelayFraction(comboboxValLeft);
+        deviationValueLeft = 0;
         //[/UserComboBoxCode_comboBoxLeft]
     }
     else if (comboBoxThatHasChanged == comboBoxRight)
@@ -672,6 +746,7 @@ void WillStereoDelayAudioProcessorEditor::comboBoxChanged (ComboBox* comboBoxTha
         //[UserComboBoxCode_comboBoxRight] -- add your combo box handling code here..
         comboboxValRight = comboBoxThatHasChanged->getSelectedId();
         *processor.rightDelayTime_param = setDelayFraction(comboboxValRight);
+        deviationValueRight = 0;
         //[/UserComboBoxCode_comboBoxRight]
     }
     else if (comboBoxThatHasChanged == leftInputSelector)
@@ -686,6 +761,26 @@ void WillStereoDelayAudioProcessorEditor::comboBoxChanged (ComboBox* comboBoxTha
         processor.rightInputSelection = comboBoxThatHasChanged->getSelectedId();
         //[/UserComboBoxCode_rightInputSelector]
     }
+    else if (comboBoxThatHasChanged == effectCombobox)
+    {
+        //[UserComboBoxCode_effectCombobox] -- add your combo box handling code here..
+        switch (comboBoxThatHasChanged->getSelectedId()) {
+            case 1:
+                bitDepthSlider.setVisible(false);
+                bitRateSlider.setVisible(false);
+                tremoloRate.setVisible(true);
+                tremoloAmount.setVisible(true);
+                break;
+            case 2:
+                tremoloRate.setVisible(false);
+                tremoloAmount.setVisible(false);
+                bitDepthSlider.setVisible(true);
+                bitRateSlider.setVisible(true);
+            default:
+                break;
+        }
+        //[/UserComboBoxCode_effectCombobox]
+    }
 
     //[UsercomboBoxChanged_Post]
     //[/UsercomboBoxChanged_Post]
@@ -698,55 +793,96 @@ void WillStereoDelayAudioProcessorEditor::comboBoxChanged (ComboBox* comboBoxTha
 float WillStereoDelayAudioProcessorEditor::setDelayFraction(int comboBoxVal)
 {
     switch (comboBoxVal) {
-        case 1:
+        case 1:return 9996;break;
+        case 2:return 11250;break;
+        case 3:return 15000;break;
+        case 4:return 19272;break;
+        case 5:return 22500;break;
+        case 6:return 30000;break;
+        case 7:return 39996;break;
+        case 8:return 45000;break;
+        case 9:return 60000;break;
+        case 10:return 79992;break;
+        case 11:return 90000;break;
+        case 12:return 120000;break;
+        default:break;
+    }
+}
 
-           return 9996;
+float WillStereoDelayAudioProcessorEditor::setComboBoxText(float sliderVal, ComboBox* combobox)
+{
 
-            break;
-        case 2:
-            return 11250;
-            break;
-        case 3:
-            return 15000;
-            break;
-        case 4:
-            return 19272;
-
-            break;
-        case 5:
-            return 22500;
-
-            break;
-        case 6:
-            return 30000;
-            break;
-        case 7:
-            return 39996;
-            break;
-        case 8:
-            return 45000;
-
-
-            break;
-        case 9:
-            return 60000;
-            break;
-        case 10:
-            return 79992;
-            break;
-        case 11:
-            return 90000;
-
-            break;
-        case 12:
-            return 120000;
-            break;
-
-        default:
-            break;
+    float deviationValue;
+    if (sliderVal > 0 && sliderVal < 9996)
+    {
+        combobox->setSelectedId(0, dontSendNotification);
+        deviationValue = (((sliderVal - 9996)/9996)*100);
     }
 
+    else if (sliderVal > 9996 && sliderVal < 11250){
+       combobox->setSelectedId(1, dontSendNotification);
+        deviationValue = (((sliderVal - 9996)/9996)*100);
+    }
+    else if (sliderVal > 11250 && sliderVal < 15000){
+            combobox->setSelectedId(2, dontSendNotification);
+        deviationValue = (((sliderVal - 11250)/11250)*100);
+    }
+    else if (sliderVal > 15000 && sliderVal < 19272){
+       combobox->setSelectedId(3, dontSendNotification);
+        deviationValue = (((sliderVal - 15000)/15000)*100);
+    }
+    else if (sliderVal > 19272 && sliderVal < 22500){
+       combobox->setSelectedId(4, dontSendNotification);
+        deviationValue = ((sliderVal - 19272)/19272*100);
+    }
+    else if (sliderVal > 22500 && sliderVal < 30000){
+       combobox->setSelectedId(5, dontSendNotification);
+        deviationValue = ((sliderVal - 22500)/22500*100);
+    }
+    else if (sliderVal > 30000 && sliderVal < 39996){
+       combobox->setSelectedId(6, dontSendNotification);
+        deviationValue = ((sliderVal - 30000)/30000*100);
+
+    }
+
+    else if (sliderVal > 39996 && sliderVal < 45000){
+       combobox->setSelectedId(7, dontSendNotification);
+        deviationValue = ((sliderVal - 39996)/39996*100);
+    }
+
+    else if (sliderVal > 45000 && sliderVal < 60000){
+       combobox->setSelectedId(8, dontSendNotification);
+        deviationValue = ((sliderVal - 45000)/45000*100);
+    }
+
+    else if (sliderVal > 60000 && sliderVal < 79992){
+       combobox->setSelectedId(9, dontSendNotification);
+        deviationValue = ((sliderVal - 60000)/60000*100);
+    }
+
+
+    else if (sliderVal > 79992 && sliderVal < 90000){
+       combobox->setSelectedId(10, dontSendNotification);
+        deviationValue = ((sliderVal - 79992)/79992*100);
+    }
+
+    else if (sliderVal > 90000 && sliderVal < 120000){
+       combobox->setSelectedId(11, dontSendNotification);
+        deviationValue = ((sliderVal - 90000)/90000*100);
+    }
+
+
+    else
+    {
+       combobox->setSelectedId(12, dontSendNotification);
+    deviationValue = ((sliderVal - 12000)/12000*100);
+    }
+
+
+return deviationValue;
+
 }
+
 
 void WillStereoDelayAudioProcessorEditor::timerCallback()
 {
@@ -759,12 +895,18 @@ void WillStereoDelayAudioProcessorEditor::timerCallback()
     rightRangeSlider.setMinAndMaxValues(*processor.rightHPF_param, *processor.rightLPF_param);
     leftDelayLabel->setText(String(floor(processor.noteValDelayL)), sendNotification);
     rightDelayLabel->setText(String(floor(processor.noteValDelayR)), sendNotification);
+    deviationLabelLeft->setText(String(deviationValueLeft), sendNotification);
+    deviationLabelRight->setText(String(deviationValueRight), sendNotification);
 
-    leftDelayTimeslider        ->setValue(*processor.leftDelayTime_param,    sendNotification);
-    rightDelayTimeslider        ->setValue(*processor.rightDelayTime_param,   sendNotification);
+
+    leftDelayTimeslider        ->setValue(*processor.leftDelayTime_param,    dontSendNotification);
+    rightDelayTimeslider        ->setValue(*processor.rightDelayTime_param,   dontSendNotification);
 
     tremoloAmount.setValue(*processor.tremoloAmount_param, dontSendNotification);
     tremoloRate.setValue(*processor.tremoloRate_param, dontSendNotification);
+    
+    crossfeedLeft.setValue(*processor.leftCrossLevel_param, dontSendNotification);
+    crossfeedRight.setValue(*processor.rightCrossLevel_param, dontSendNotification);
 
 }
 
@@ -887,19 +1029,33 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
           needsCallback="1"/>
   <COMBOBOX name="left input selector" id="523b0570375aa023" memberName="leftInputSelector"
-            virtualName="" explicitFocusOrder="0" pos="8 8 60 24" editable="0"
-            layout="33" items="Left&#10;Right&#10;None" textWhenNonSelected="Left"
+            virtualName="" explicitFocusOrder="0" pos="8 8 72 24" editable="0"
+            layout="33" items="Left&#10;Right&#10;L+R&#10;None" textWhenNonSelected="Left"
             textWhenNoItems="(no choices)"/>
   <COMBOBOX name="right input selector" id="25c1a41c1686bd3a" memberName="rightInputSelector"
-            virtualName="" explicitFocusOrder="0" pos="728 8 60 24" editable="0"
-            layout="33" items="Right&#10;Left&#10;None" textWhenNonSelected="Right"
+            virtualName="" explicitFocusOrder="0" pos="720 8 68 24" editable="0"
+            layout="33" items="Right&#10;Left&#10;R+L&#10;None" textWhenNonSelected="Right"
             textWhenNoItems="(no choices)"/>
   <TEXTBUTTON name="main button" id="3b4d08f5c2f2f175" memberName="mainButton"
-              virtualName="" explicitFocusOrder="0" pos="808 248 66 24" buttonText="Main"
+              virtualName="" explicitFocusOrder="0" pos="832 328 66 24" buttonText="Main"
               connectedEdges="0" needsCallback="1" radioGroupId="1001"/>
   <TEXTBUTTON name="feedback button" id="12cff3675bab067e" memberName="feedbackButton"
-              virtualName="" explicitFocusOrder="0" pos="880 248 66 24" buttonText="feedback"
+              virtualName="" explicitFocusOrder="0" pos="904 328 66 24" buttonText="feedback"
               connectedEdges="0" needsCallback="1" radioGroupId="1001"/>
+  <LABEL name="deviation label left" id="34c796cf321175ce" memberName="deviationLabelLeft"
+         virtualName="" explicitFocusOrder="0" pos="216 96 104 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="16.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
+  <LABEL name="deviation label right" id="550990735c26d8b5" memberName="deviationLabelRight"
+         virtualName="" explicitFocusOrder="0" pos="680 96 104 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="16.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
+  <COMBOBOX name="effect combo box" id="36245f6b9ed3440f" memberName="effectCombobox"
+            virtualName="" explicitFocusOrder="0" pos="840 8 128 24" editable="0"
+            layout="33" items="Tremolo&#10;Bitcrusher" textWhenNonSelected="Effects"
+            textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

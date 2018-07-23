@@ -73,7 +73,10 @@ public:
     };
 
     float setDelayFraction(int comboBoxVal);
+    float setComboBoxText(float sliderVal, ComboBox* combobox);
     bool toggleState;
+    float deviationValueLeft;
+    float deviationValueRight;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -106,6 +109,8 @@ private:
     FilmstripSlider rightFdbckSlider;
     FilmstripSlider tremoloAmount;
     FilmstripSlider tremoloRate;
+    FilmstripSlider bitRateSlider;
+    FilmstripSlider bitDepthSlider;
 
     Image image_sslRotary;
     Image image_bypass;
@@ -146,6 +151,9 @@ private:
     ScopedPointer<ComboBox> rightInputSelector;
     ScopedPointer<TextButton> mainButton;
     ScopedPointer<TextButton> feedbackButton;
+    ScopedPointer<Label> deviationLabelLeft;
+    ScopedPointer<Label> deviationLabelRight;
+    ScopedPointer<ComboBox> effectCombobox;
 
 
     //==============================================================================
