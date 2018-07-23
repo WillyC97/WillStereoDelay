@@ -141,7 +141,9 @@ void DigitalDelayLine::setBitRate(int br)
 
 float DigitalDelayLine::next(float input, float channel, int i)
 {
-    /////////////////Tremolo///////////////////////
+    ///----------------------------------------------------------------- ///
+    ///======================= Tremolo ================================= ///
+    ///----------------------------------------------------------------- ///
     calculateTremolo();
     updateAngleDelta();
     
@@ -150,18 +152,14 @@ float DigitalDelayLine::next(float input, float channel, int i)
     {
         currentAngle -= (2 *M_PI);
     }
-    ////////////////////////////////////////////
-    
-    
-    
-    
+    ///----------------------------------------------------------------- ///
+    ///================================================================= ///
+    ///----------------------------------------------------------------- ///
     
     float xn = input;
     
     float yn = buffer[readIndex];
-    
-    
-    
+
     if(readIndex == writeIndex && delayInSamples < 1.00)
     {
         yn = xn;
@@ -174,35 +172,43 @@ float DigitalDelayLine::next(float input, float channel, int i)
     float yn_minus1 = buffer[readPos_minus1];
     
     float interp = linInterp(0, 1, yn, yn_minus1, fraction);
-    
-    
+
     if(delayInSamples == 0)
         yn = xn;
     else
         yn = interp;
-    
-    
+ 
     // write the input to the delay
     buffer[writeIndex] = xn + feedback*yn + feedBackIn;
     // create the wet/dry mix and write to the output buffer
     // dry = 1 - wet
     
+    
+    
+    //Filters
     yn = processChannelLPF(yn, channel);
     yn = processChannelHPF(yn, channel);
+    //Filters
     
-    ////////////////Bit Crusher////////////
+    
+    ///----------------------------------------------------------------- ///
+    ///======================= Bitcrusher ============================== ///
+    ///----------------------------------------------------------------- ///
     float totalQLevels = powf(2, bitDepth);
     float remainder = fmodf(yn, 1/totalQLevels);
-    
     // Quantize ...
    yn = yn - remainder;
     
     if (rateDivide > 1)
     {
-        if (i%rateDivide != 0) yn = buffer[readIndex - readIndex%rateDivide];
+        if (i%rateDivide != 0){
+            yn = buffer[readIndex - readIndex%rateDivide];
+        }
     }
     
-    ///////////////////////////////////////////////////////////
+    ///----------------------------------------------------------------- ///
+    ///================================================================= ///
+    ///----------------------------------------------------------------- ///
     
     
     

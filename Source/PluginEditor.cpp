@@ -316,7 +316,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
 
     leftFdbckSlider.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     leftFdbckSlider.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-    leftFdbckSlider.setRange(0, 100);
+    leftFdbckSlider.setRange(0, 100, 1);
     leftFdbckSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
     leftFdbckSlider.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
     addAndMakeVisible(&leftFdbckSlider);
@@ -324,7 +324,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
 
     rightFdbckSlider.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     rightFdbckSlider.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-    rightFdbckSlider.setRange(0, 100);
+    rightFdbckSlider.setRange(0, 100, 1);
     rightFdbckSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
     rightFdbckSlider.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
     addAndMakeVisible(&rightFdbckSlider);
@@ -332,7 +332,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
 
     crossfeedLeft.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     crossfeedLeft.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-    crossfeedLeft.setRange(0, 100);
+    crossfeedLeft.setRange(0, 100, 1);
     crossfeedLeft.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
     crossfeedLeft.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
     addAndMakeVisible(&crossfeedLeft);
@@ -340,7 +340,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
 
     crossfeedRight.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     crossfeedRight.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-    crossfeedRight.setRange(0, 100);
+    crossfeedRight.setRange(0, 100, 1);
     crossfeedRight.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
     crossfeedRight.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
     addAndMakeVisible(&crossfeedRight);
@@ -351,7 +351,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     tremoloRate.setRange(0, 20, 0.1);
     tremoloRate.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
     tremoloRate.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
-    tremoloRate.setSkewFactorFromMidPoint(2);
+    tremoloRate.setSkewFactorFromMidPoint(3.0);
     addAndMakeVisible(&tremoloRate);
     tremoloRate.addListener(this);
     tremoloRate.setVisible(false);
@@ -904,6 +904,9 @@ void WillStereoDelayAudioProcessorEditor::timerCallback()
 
     tremoloAmount.setValue(*processor.tremoloAmount_param, dontSendNotification);
     tremoloRate.setValue(*processor.tremoloRate_param, dontSendNotification);
+    
+    crossfeedLeft.setValue(*processor.leftCrossLevel_param, dontSendNotification);
+    crossfeedRight.setValue(*processor.rightCrossLevel_param, dontSendNotification);
 
 }
 

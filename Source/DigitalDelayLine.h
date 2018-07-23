@@ -87,11 +87,6 @@ public:
     void setPostPreMixToggle(int val);
     int postPreMix;
     
-    
- 
-    
-
-    
 private:
     double BPM;
    
