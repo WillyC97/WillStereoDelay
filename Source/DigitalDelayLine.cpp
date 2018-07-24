@@ -137,6 +137,14 @@ void DigitalDelayLine::setBitRate(int br)
 {
     rateDivide = br;
 }
+void DigitalDelayLine::setHiPassCutOff(float hp)
+{
+    HPass1 = hp;
+}
+void DigitalDelayLine::setLowPassCutOff(float lp)
+{
+    LPass1 = lp;
+}
 //-------------------------------------------
 
 float DigitalDelayLine::next(float input, float channel, int i)
@@ -186,8 +194,15 @@ float DigitalDelayLine::next(float input, float channel, int i)
     
     
     //Filters
-    yn = processChannelLPF(yn, channel);
-    yn = processChannelHPF(yn, channel);
+    LowPassFilter.calcFilterLPF(sampleRate, LPass1);
+    HiPassFilter.calcFilterHPF(sampleRate, HPass1);
+    
+    yn = LowPassFilter.processChannelLPF(yn, channel);
+    yn = HiPassFilter.processChannelHPF(yn, channel);
+    
+    
+//    yn = processChannelLPF(yn, channel);
+//    yn = processChannelHPF(yn, channel);
     //Filters
     
     
@@ -267,70 +282,7 @@ void DigitalDelayLine::resetDelay()
 ///======================= Filter Calculation ====================== ///
 ///----------------------------------------------------------------- ///
 
-float DigitalDelayLine::processChannelHPF(float input, int channelIdx)
-{
-    double out = input * a0HP + z1_AHP[channelIdx];
-    z1_AHP[channelIdx] = (input * a1HP) + z2_AHP[channelIdx] - (b1HP * out);
-    z2_AHP[channelIdx] = (input * a2HP) - (b2HP * out);
-    return out;
-}
 
-float DigitalDelayLine::processChannelLPF(float input, int channelIdx)
-{
-    double out = input * a0LP + z1_ALP[channelIdx];
-    z1_ALP[channelIdx] = (input * a1LP) + z2_ALP[channelIdx] - (b1LP * out);
-    z2_ALP[channelIdx] = (input * a2LP) - (b2LP * out);
-    return out;
-}
-
-void DigitalDelayLine::calcFilterLPF(float samplerate, int cutoff)
-{
-    
-    //----------------second order LPF ------------
-    float theta_c = 2.0*M_PI*cutoff/samplerate;
-    float d = 1.0/0.707;
-    // intermediate values
-    float fBetaNumerator = 1.0 - ((d/2.0)*(sin(theta_c)));
-    float fBetaDenominator = 1.0 + ((d/2.0)*(sin(theta_c)));
-    //beta
-    float fBeta = 0.5*(fBetaNumerator/fBetaDenominator);
-    // gamma
-    float fGamma = (0.5 + fBeta)*(cos(theta_c));
-    // alpha
-    float fAlpha = (0.5 + fBeta - fGamma)/2.0;
-    //filter coefficients
-    a0LP = fAlpha;
-    a1LP = 2.0*fAlpha;
-    
-    a2LP = fAlpha;
-    b1LP = -2.0*fGamma;
-    b2LP = 2.0*fBeta;
-    
-}
-
-void DigitalDelayLine::calcFilterHPF(float samplerate, int cutoff)
-{
-    
-    float theta_c = 2.0*M_PI*cutoff/samplerate;
-    float d = 1.0/0.707;
-    // intermediate values
-    float fBetaNumerator = 1.0 - ((d/2.0)*(sin(theta_c)));
-    float fBetaDenominator = 1.0 + ((d/2.0)*(sin(theta_c)));
-    //beta
-    float fBeta = 0.5*(fBetaNumerator/fBetaDenominator);
-    // gamma
-    float fGamma = (0.5 + fBeta)*(cos(theta_c));
-    
-    float fAlpha = (0.5 + fBeta + fGamma)/2.0;
-    
-    a0HP = fAlpha;
-    a1HP = -(2.0*fAlpha);
-    a2HP = fAlpha;
-    b1HP = -2.0*fGamma;
-    b2HP = 2.0*fBeta;
-    
-    
-}
 
 ///----------------------------------------------------------------- ///
 ///======================= Tremolo ====================== ///

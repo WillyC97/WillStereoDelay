@@ -364,7 +364,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     addAndMakeVisible(&tremoloAmount);
     tremoloAmount.addListener(this);
     tremoloAmount.setVisible(false);
-    
+
     bitRateSlider.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     bitRateSlider.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
     bitRateSlider.setRange(1, 50, 1);
@@ -373,9 +373,9 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     addAndMakeVisible(&bitRateSlider);
     bitRateSlider.addListener(this);
     bitRateSlider.setVisible(false);
-   
-    
-    
+
+
+
     bitDepthSlider.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     bitDepthSlider.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
     bitDepthSlider.setRange(4, 24, 1);
@@ -503,9 +503,6 @@ void WillStereoDelayAudioProcessorEditor::sliderValueChanged (Slider* sliderThat
     {
         //[UserSliderCode_leftMixSlider] -- add your slider handling code here..
         *processor.leftMix_param = sliderThatWasMoved->getValue();
-
-       sliderThatWasMoved->setColour (Slider::thumbColourId, Colours::blue);
-
         //[/UserSliderCode_leftMixSlider]
     }
     else if (sliderThatWasMoved == rightMixSlider)
@@ -904,7 +901,7 @@ void WillStereoDelayAudioProcessorEditor::timerCallback()
 
     tremoloAmount.setValue(*processor.tremoloAmount_param, dontSendNotification);
     tremoloRate.setValue(*processor.tremoloRate_param, dontSendNotification);
-    
+
     crossfeedLeft.setValue(*processor.leftCrossLevel_param, dontSendNotification);
     crossfeedRight.setValue(*processor.rightCrossLevel_param, dontSendNotification);
 

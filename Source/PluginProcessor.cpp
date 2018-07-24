@@ -187,11 +187,14 @@ void WillStereoDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, Mi
     
     for(int i = 0; i < numSamples; i++){
         
-        delay_left.calcFilterLPF(SampleRate, *leftLPF_param);
-        delay_right.calcFilterLPF(SampleRate, *rightLPF_param);
+        delay_left.setLowPassCutOff(*leftLPF_param);
+        delay_right.setLowPassCutOff(*rightLPF_param);
         
-        delay_left.calcFilterHPF(SampleRate, *leftHPF_param);
-        delay_right.calcFilterHPF(SampleRate, *rightHPF_param);
+        delay_left.setHiPassCutOff(*leftHPF_param);
+        delay_right.setHiPassCutOff(*rightHPF_param);
+        
+//        delay_left.calcFilterHPF(SampleRate, *leftHPF_param);
+//        delay_right.calcFilterHPF(SampleRate, *rightHPF_param);
         
         //delay_left.setCrossFeeedbackLevel(*leftCrossLevel_param);
 
