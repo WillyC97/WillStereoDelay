@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT name="WillStereoDelay" projectType="audioplug" buildStandalone="1"
-              jucerVersion="5.2.1">
+<JUCERPROJECT name="WillStereoDelay" projectType="audioplug" jucerVersion="5.2.1"
+              buildVST="1">
   <MAINGROUP id="gAKKzX" name="WillStereoDelay">
     <GROUP id="{500409E5-FA9A-CD97-1F8B-F84661A6AE95}" name="GUI">
       <GROUP id="{74D3D594-53F8-41F2-3F35-9DB3DC500291}" name="assets">
@@ -36,6 +36,10 @@
             file="Source/DigitalDelayLine.cpp"/>
       <FILE id="crp43G" name="DigitalDelayLine.h" compile="0" resource="0"
             file="Source/DigitalDelayLine.h"/>
+      <FILE id="REcoyt" name="Filters.cpp" compile="1" resource="0" file="Source/Filters.cpp"/>
+      <FILE id="lJ2wn1" name="Filters.h" compile="0" resource="0" file="Source/Filters.h"/>
+      <FILE id="qyue5q" name="LFO.cpp" compile="1" resource="0" file="Source/LFO.cpp"/>
+      <FILE id="IO04a0" name="LFO.h" compile="0" resource="0" file="Source/LFO.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

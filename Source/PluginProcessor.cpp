@@ -125,8 +125,9 @@ void WillStereoDelayAudioProcessor::prepareToPlay (double sampleRate, int sample
     delay_left.setSampleRate(sampleRate);
     delay_right.setSampleRate(sampleRate);
     
-    delay_left.updateAngleDelta();
-    delay_right.updateAngleDelta();
+    delay_left.tremolo.updateAngleDelta(sampleRate);
+    delay_right.tremolo.updateAngleDelta(sampleRate);
+    
     
     SampleRate = sampleRate;
    
@@ -164,17 +165,51 @@ bool WillStereoDelayAudioProcessor::isBusesLayoutSupported (const BusesLayout& l
 }
 #endif
 
+void WillStereoDelayAudioProcessor::setVariables()
+{
+    delay_left.setLowPassCutOff(*leftLPF_param);
+    delay_right.setLowPassCutOff(*rightLPF_param);
+    
+    delay_left.setHiPassCutOff(*leftHPF_param);
+    delay_right.setHiPassCutOff(*rightHPF_param);
+    
+    noteValDelayL = delay_left.calculateDelay(*leftDelayTime_param, BPM);
+    noteValDelayR = delay_right.calculateDelay(*rightDelayTime_param, BPM);
+
+    delay_left.setDelayTime(noteValDelayL);
+    delay_right.setDelayTime(noteValDelayR);
+    
+    delay_left.setFeedback(*leftFeedback_param);
+    delay_right.setFeedback(*rightFeedback_param);
+    delay_left.setMixlevel(*leftMix_param);
+    delay_right.setMixlevel(*rightMix_param);
+    
+    delay_left.setCrossFeedVal(*leftCrossLevel_param);
+    delay_right.setCrossFeedVal(*rightCrossLevel_param);
+    
+    delay_left.setCurrentFeedbackInput(delay_right.getCurrentFeedbackOutput());
+    delay_right.setCurrentFeedbackInput(delay_left.getCurrentFeedbackOutput());
+    
+    delay_left.tremolo.setLFOAmount(*tremoloAmount_param);
+    delay_right.tremolo.setLFOAmount(*tremoloAmount_param);
+    
+    delay_left.tremolo.setLFORate(*tremoloRate_param);
+    delay_right.tremolo.setLFORate(*tremoloRate_param);
+    
+    delay_left.setPostPreMixToggle(postPreMix);
+    delay_right.setPostPreMixToggle(postPreMix);
+    
+    delay_left.setBitdepth(*bitDepth_param);
+    delay_right.setBitdepth(*bitDepth_param);
+    
+    delay_left.setBitRate(*bitRate_param);
+    delay_right.setBitRate(*bitRate_param);
+    
+    
+}
+
 void WillStereoDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    
-   
-    
-//ScopedNoDenormals noDenormals;
-//    auto totalNumInputChannels  = getTotalNumInputChannels();
-//    auto totalNumOutputChannels = getTotalNumOutputChannels();
-
-    //THIS IS NUM SAMPLES PER CHANNEL
-    
     const int totalNumInputChannels  = getTotalNumInputChannels();
     const int totalNumOutputChannels = getTotalNumOutputChannels();
     const int numSamples = buffer.getNumSamples();
@@ -182,108 +217,47 @@ void WillStereoDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, Mi
     for (int i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
-    
-    
-    
-    for(int i = 0; i < numSamples; i++){
-        
-        delay_left.calcFilterLPF(SampleRate, *leftLPF_param);
-        delay_right.calcFilterLPF(SampleRate, *rightLPF_param);
-        
-        delay_left.calcFilterHPF(SampleRate, *leftHPF_param);
-        delay_right.calcFilterHPF(SampleRate, *rightHPF_param);
-        
-        //delay_left.setCrossFeeedbackLevel(*leftCrossLevel_param);
-
-        
-        playHead = this->getPlayHead();
-        playHead->getCurrentPosition (currentPositionInfo);
-        
-        BPM = currentPositionInfo.bpm;
-        
-                
-        noteValDelayL = delay_left.calculateDelay(*leftDelayTime_param, BPM);
-        noteValDelayR = delay_right.calculateDelay(*rightDelayTime_param, BPM);
-        
-
-        
-        
-        delay_left.setDelayTime(noteValDelayL);
-        delay_right.setDelayTime(noteValDelayR);
-        
-        delay_left.setFeedback(*leftFeedback_param);
-        delay_right.setFeedback(*rightFeedback_param);
-        delay_left.setMixlevel(*leftMix_param);
-        delay_right.setMixlevel(*rightMix_param);
-        
-        delay_left.setCrossFeedVal(*leftCrossLevel_param);
-        delay_right.setCrossFeedVal(*rightCrossLevel_param);
-        
-        delay_left.setCurrentFeedbackInput(delay_right.getCurrentFeedbackOutput());
-        delay_right.setCurrentFeedbackInput(delay_left.getCurrentFeedbackOutput());
-        
-        delay_left.setTremoloAmount(*tremoloAmount_param);
-        delay_right.setTremoloAmount(*tremoloAmount_param);
-
-        delay_left.setTremoloRate(*tremoloRate_param);
-        delay_right.setTremoloRate(*tremoloRate_param);
-        
-        delay_left.setPostPreMixToggle(postPreMix);
-        delay_right.setPostPreMixToggle(postPreMix);
-        
-        delay_left.setBitdepth(*bitDepth_param);
-        delay_right.setBitdepth(*bitDepth_param);
-        
-        delay_left.setBitRate(*bitRate_param);
-        delay_right.setBitRate(*bitRate_param);
-        
+        for(int i = 0; i < numSamples; i++){
+     
+            playHead = this->getPlayHead();
+            playHead->getCurrentPosition (currentPositionInfo);
+            BPM = currentPositionInfo.bpm;
+            
+            setVariables();
             
             float* channelDataLeft = buffer.getWritePointer(0);
             float* channelDataRight = buffer.getWritePointer(1);
-            //float* channelData = buffer.getWritePointer (channel);
-        
-        float leftChannelInput = channelDataLeft[i];
-        float rightChannelInput = channelDataRight[i];
-        
-        switch (leftInputSelection) {
-            case 1: leftChannelInput = channelDataLeft[i];break;
-            case 2: leftChannelInput = channelDataRight[i];break;
-            case 3: leftChannelInput = channelDataLeft[i] + channelDataRight[i];break;
-            case 4: leftChannelInput = 0;break;
-            default:
-                break;
-        }
-        
-        switch (rightInputSelection) {
-            case 1: rightChannelInput = channelDataRight[i];break;
-            case 2: rightChannelInput = channelDataLeft[i];break;
-            case 3: leftChannelInput = channelDataLeft[i] + channelDataRight[i];break;
-            case 4: rightChannelInput = 0;break;
-
-            default:
-                break;
-        }
-        
-        
-        
-        channelDataLeft[i] = delay_left.next(leftChannelInput, 0, i);
-        
-        
             
-            if(getTotalNumInputChannels() == 1 && getTotalNumOutputChannels() == 2){
-                channelDataRight[i] = channelDataLeft[i];
-
+            float leftChannelInput = channelDataLeft[i];
+            float rightChannelInput = channelDataRight[i];
+            
+            switch (leftInputSelection)
+            {
+                case 1: leftChannelInput = channelDataLeft[i];break;
+                case 2: leftChannelInput = channelDataRight[i];break;
+                case 3: leftChannelInput = channelDataLeft[i] + channelDataRight[i];break;
+                case 4: leftChannelInput = 0;break;
+                default:break;
             }
             
-            //Stereo In , Stereo Out
-            if(getTotalNumInputChannels() == 2 && getTotalNumOutputChannels() == 2){
-                channelDataRight[i] = delay_right.next(rightChannelInput, 1, i);
-                
+            switch (rightInputSelection) {
+                case 1: rightChannelInput = channelDataRight[i];break;
+                case 2: rightChannelInput = channelDataLeft[i];break;
+                case 3: leftChannelInput = channelDataLeft[i] + channelDataRight[i];break;
+                case 4: rightChannelInput = 0;break;
+                default: break;
             }
             
-        
-       
-        
+            channelDataLeft[i] = delay_left.next(leftChannelInput, 0, i);
+
+                if(getTotalNumInputChannels() == 1 && getTotalNumOutputChannels() == 2){
+                    channelDataRight[i] = channelDataLeft[i];
+                }
+            
+                //Stereo In , Stereo Out
+                if(getTotalNumInputChannels() == 2 && getTotalNumOutputChannels() == 2){
+                    channelDataRight[i] = delay_right.next(rightChannelInput, 1, i);
+                }
     }
 }
 

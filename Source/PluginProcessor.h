@@ -58,6 +58,8 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     
+    void setVariables();
+    
     AudioParameterInt* leftMix_param;
     AudioParameterInt* rightMix_param;
     AudioParameterFloat* leftDelayTime_param;
