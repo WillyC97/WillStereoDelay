@@ -42,7 +42,8 @@ WillStereoDelayAudioProcessor::WillStereoDelayAudioProcessor()
     addParameter(tremoloRate_param = new AudioParameterFloat("TremoloRate", "Tremolo Rate", 0, 20, 0));
     addParameter(bitDepth_param = new AudioParameterInt("bitDepth", "Bit Depth", 4, 32, 24));
     addParameter(bitRate_param = new AudioParameterInt("bitRate", "Bit Rate", 1, 50, 1));
-
+    addParameter(RLPFcutoff_param = new AudioParameterInt("ResonantLPFcutoff", "Resonant LPF Cutoff", 20, 20000, 20000));
+    addParameter(RLPFq_param = new AudioParameterFloat("ResonantLPFq", "Resonant LPF Q", 0.5, 20, 0.707));
 
 }
 
@@ -205,8 +206,13 @@ void WillStereoDelayAudioProcessor::setVariables()
     delay_left.setBitRate(*bitRate_param);
     delay_right.setBitRate(*bitRate_param);
     
+    delay_left.setResLowPassCutOff(*RLPFcutoff_param);
+    delay_right.setResLowPassCutOff(*RLPFcutoff_param);
     
+    delay_left.setResLowPassq(*RLPFq_param);
+    delay_right.setResLowPassq(*RLPFq_param);
 }
+
 
 void WillStereoDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {

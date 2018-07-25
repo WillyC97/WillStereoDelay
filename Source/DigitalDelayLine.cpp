@@ -145,6 +145,14 @@ void DigitalDelayLine::setLowPassCutOff(float lp)
 {
     LPass1 = lp;
 }
+void DigitalDelayLine::setResLowPassCutOff(float lp)
+{
+    RLPassCutoff = lp;
+}
+void DigitalDelayLine::setResLowPassq(float q)
+{
+    RLPassQ = q;
+}
 //-------------------------------------------
 
 float DigitalDelayLine::next(float input, float channel, int i)
@@ -193,9 +201,11 @@ float DigitalDelayLine::next(float input, float channel, int i)
     //Filters///////////////////////////////////////////
     LowPassFilter.calcFilterLPF(sampleRate, LPass1);
     HiPassFilter.calcFilterHPF(sampleRate, HPass1);
+    ResonantLPF.calcResonantLPF(sampleRate, RLPassCutoff, RLPassQ);
     
     yn = LowPassFilter.processChannelLPF(yn, channel);
     yn = HiPassFilter.processChannelHPF(yn, channel);
+    yn = ResonantLPF.processChannelRLPF(yn, channel);
     //Filters///////////////////////////////////////////
     
     
@@ -271,15 +281,6 @@ void DigitalDelayLine::resetDelay()
     readIndex = 0;
 }
 
-///----------------------------------------------------------------- ///
-///======================= Filter Calculation ====================== ///
-///----------------------------------------------------------------- ///
-
-
-
-///----------------------------------------------------------------- ///
-///======================= Tremolo ====================== ///
-///----------------------------------------------------------------- ///
 
 
 

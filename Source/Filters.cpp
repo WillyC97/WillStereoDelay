@@ -31,6 +31,13 @@ float Filters::processChannelLPF(float input, int channelIdx)
     z2_ALP[channelIdx] = (input * a2LP) - (b2LP * out);
     return out;
 }
+float Filters::processChannelRLPF(float input, int channelIdx)
+{
+    double out = input * a0RLP + z1_ARLP[channelIdx];
+    z1_ARLP[channelIdx] = (input * a1RLP) + z2_ARLP[channelIdx] - (b1RLP * out);
+    z2_ARLP[channelIdx] = (input * a2RLP) - (b2RLP * out);
+    return out;
+}
 
 void Filters::calcFilterLPF(float samplerate, int cutoff)
 {
@@ -78,6 +85,28 @@ void Filters::calcFilterHPF(float samplerate, int cutoff)
     b1HP = -2.0*fGamma;
     b2HP = 2.0*fBeta;
     
+    
+}
+
+void Filters::calcResonantLPF(float samplerate, int cutoff, float q)
+{
+    
+    float theta_c = 2.0*M_PI*cutoff/samplerate;
+    float d = 1.0/q;
+    // intermediate values
+    float fBetaNumerator = 1.0 -((d/2.0)*(sin(theta_c))); float fBetaDenominator = 1.0 + ((d/2.0)*(sin(theta_c)));
+    // beta
+    float fBeta = 0.5*(fBetaNumerator/fBetaDenominator);
+    // gamma
+    float fGamma = (0.5 + fBeta)*(cos(theta_c));
+    // alpha
+    float fAlpha = (0.5 + fBeta - fGamma)/2.0;
+    // left channel
+    a0RLP = fAlpha;
+    a1RLP = 2.0*fAlpha;
+    a2RLP = fAlpha;
+    b1RLP = - 2.0*fGamma;
+    b2RLP = 2.0*fBeta;
     
 }
 

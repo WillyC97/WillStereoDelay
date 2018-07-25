@@ -294,6 +294,7 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     effectCombobox->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     effectCombobox->addItem (TRANS("Tremolo"), 1);
     effectCombobox->addItem (TRANS("Bitcrusher"), 2);
+    effectCombobox->addItem (TRANS("Resonant LPF"), 3);
     effectCombobox->addListener (this);
 
     effectCombobox->setBounds (840, 8, 128, 24);
@@ -374,8 +375,6 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     bitRateSlider.addListener(this);
     bitRateSlider.setVisible(false);
 
-
-
     bitDepthSlider.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
     bitDepthSlider.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
     bitDepthSlider.setRange(4, 24, 1);
@@ -384,6 +383,24 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
     addAndMakeVisible(&bitDepthSlider);
     bitDepthSlider.addListener(this);
     bitDepthSlider.setVisible(false);
+    
+    resLPFcutOffSlider.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
+    resLPFcutOffSlider.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+    resLPFcutOffSlider.setRange(20, 20000, 1);
+    resLPFcutOffSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
+    resLPFcutOffSlider.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
+    addAndMakeVisible(&resLPFcutOffSlider);
+    resLPFcutOffSlider.addListener(this);
+    resLPFcutOffSlider.setVisible(false);
+    
+    resLPFqSlider.setImage(image_sslRotary, image_sslRotary.getHeight() / image_sslRotary.getWidth(), false);
+    resLPFqSlider.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+    resLPFqSlider.setRange(0.5, 20, 0);
+    resLPFqSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 80, 20);
+    resLPFqSlider.setColour (Slider::textBoxOutlineColourId, Colour (0x008e989b));
+    addAndMakeVisible(&resLPFqSlider);
+    resLPFqSlider.addListener(this);
+    resLPFqSlider.setVisible(false);
 
 //time sync button
         Image image_bypass = ImageCache::getFromMemory(BinaryData::switch_toggle_sub_png, BinaryData::SimpleEqualizer_bypass_pngSize);
@@ -402,6 +419,46 @@ WillStereoDelayAudioProcessorEditor::WillStereoDelayAudioProcessorEditor (WillSt
 
     leftDelayTimeslider->setSkewFactorFromMidPoint(40000);
     rightDelayTimeslider->setSkewFactorFromMidPoint(40000);
+
+    tremAmountLabel.setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    tremAmountLabel.setText(("Amount"), sendNotification);
+    tremAmountLabel.setJustificationType (Justification::centredLeft);
+    tremAmountLabel.setEditable (false, false, false);
+    tremAmountLabel.setColour (TextEditor::textColourId, Colours::black);
+    tremAmountLabel.setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    addAndMakeVisible(tremAmountLabel);
+    tremAmountLabel.setBounds(860, 64, 64, 64);
+    tremAmountLabel.setVisible(false);
+
+    tremRateLabel.setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    tremRateLabel.setText(("Rate (Hz)"), sendNotification);
+    tremRateLabel.setJustificationType (Justification::centredLeft);
+    tremRateLabel.setEditable (false, false, false);
+    tremRateLabel.setColour (TextEditor::textColourId, Colours::black);
+    tremRateLabel.setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    addAndMakeVisible(tremRateLabel);
+    tremRateLabel.setBounds(860, 160, 64, 64);
+    tremRateLabel.setVisible(false);
+
+    bitDepthLabel.setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    bitDepthLabel.setText(("Downsampling"), sendNotification);
+    bitDepthLabel.setJustificationType (Justification::centredLeft);
+    bitDepthLabel.setEditable (false, false, false);
+    bitDepthLabel.setColour (TextEditor::textColourId, Colours::black);
+    bitDepthLabel.setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    addAndMakeVisible(bitDepthLabel);
+    bitDepthLabel.setBounds(860, 64, 96, 64);
+    bitDepthLabel.setVisible(false);
+
+    bitRateLabel.setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    bitRateLabel.setText(("Resolution"), sendNotification);
+    bitRateLabel.setJustificationType (Justification::centredLeft);
+    bitRateLabel.setEditable (false, false, false);
+    bitRateLabel.setColour (TextEditor::textColourId, Colours::black);
+    bitRateLabel.setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    addAndMakeVisible(bitRateLabel);
+    bitRateLabel.setBounds(860, 160, 64, 64);
+    bitRateLabel.setVisible(false);
 
     //[/Constructor]
 }
@@ -475,8 +532,12 @@ void WillStereoDelayAudioProcessorEditor::resized()
     tremoloAmount.setBounds(800, 64, 64, 64);
     tremoloRate.setBounds(800, 160, 64, 64);
 
-    bitRateSlider.setBounds(900, 64, 64, 64);
-    bitDepthSlider.setBounds(900, 160, 64, 64);
+    bitRateSlider.setBounds(800, 64, 64, 64);
+    bitDepthSlider.setBounds(800, 160, 64, 64);
+    
+    resLPFcutOffSlider.setBounds(800, 64, 64, 64);
+    resLPFqSlider.setBounds(800, 160, 64, 64);
+
 
         //Left hi-low pass Slider
     leftRangeSlider.setBounds(68, 220, 180, 40);
@@ -578,6 +639,20 @@ void WillStereoDelayAudioProcessorEditor::sliderValueChanged (Slider* sliderThat
         //[UserSliderCode_rightFdbckSlider] -- add your slider handling code here..
         *processor.bitRate_param = sliderThatWasMoved->getValue();
 
+        //[/UserSliderCode_rightFdbckSlider]
+    }
+    else if (sliderThatWasMoved == &resLPFcutOffSlider)
+    {
+        //[UserSliderCode_rightFdbckSlider] -- add your slider handling code here..
+        *processor.RLPFcutoff_param = sliderThatWasMoved->getValue();
+        
+        //[/UserSliderCode_rightFdbckSlider]
+    }
+    else if (sliderThatWasMoved == &resLPFqSlider)
+    {
+        //[UserSliderCode_rightFdbckSlider] -- add your slider handling code here..
+        *processor.RLPFq_param = sliderThatWasMoved->getValue();
+        
         //[/UserSliderCode_rightFdbckSlider]
     }
     else if (sliderThatWasMoved == &leftRangeSlider)
@@ -763,16 +838,42 @@ void WillStereoDelayAudioProcessorEditor::comboBoxChanged (ComboBox* comboBoxTha
         //[UserComboBoxCode_effectCombobox] -- add your combo box handling code here..
         switch (comboBoxThatHasChanged->getSelectedId()) {
             case 1:
+                resLPFcutOffSlider.setVisible(false);
+                resLPFqSlider.setVisible(false);
                 bitDepthSlider.setVisible(false);
                 bitRateSlider.setVisible(false);
+                bitDepthLabel.setVisible(false);
+                bitRateLabel.setVisible(false);
                 tremoloRate.setVisible(true);
                 tremoloAmount.setVisible(true);
+                tremRateLabel.setVisible(true);
+                tremAmountLabel.setVisible(true);
+                
                 break;
             case 2:
+                resLPFcutOffSlider.setVisible(false);
+                resLPFqSlider.setVisible(false);
                 tremoloRate.setVisible(false);
                 tremoloAmount.setVisible(false);
+                tremRateLabel.setVisible(false);
+                tremAmountLabel.setVisible(false);
                 bitDepthSlider.setVisible(true);
                 bitRateSlider.setVisible(true);
+                bitDepthLabel.setVisible(true);
+                bitRateLabel.setVisible(true);
+                break;
+                
+            case 3:
+                resLPFcutOffSlider.setVisible(true);
+                resLPFqSlider.setVisible(true);
+                tremoloRate.setVisible(false);
+                tremoloAmount.setVisible(false);
+                tremRateLabel.setVisible(false);
+                tremAmountLabel.setVisible(false);
+                bitDepthSlider.setVisible(false);
+                bitRateSlider.setVisible(false);
+                bitDepthLabel.setVisible(false);
+                bitRateLabel.setVisible(false);
             default:
                 break;
         }
@@ -1051,7 +1152,7 @@ BEGIN_JUCER_METADATA
          kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
   <COMBOBOX name="effect combo box" id="36245f6b9ed3440f" memberName="effectCombobox"
             virtualName="" explicitFocusOrder="0" pos="840 8 128 24" editable="0"
-            layout="33" items="Tremolo&#10;Bitcrusher" textWhenNonSelected="Effects"
+            layout="33" items="Tremolo&#10;Bitcrusher&#10;Resonant LPF" textWhenNonSelected="Effects"
             textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 

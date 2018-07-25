@@ -111,6 +111,13 @@ private:
     FilmstripSlider tremoloRate;
     FilmstripSlider bitRateSlider;
     FilmstripSlider bitDepthSlider;
+    FilmstripSlider resLPFcutOffSlider;
+    FilmstripSlider resLPFqSlider;
+    
+    Label tremRateLabel;
+    Label tremAmountLabel;
+    Label bitDepthLabel;
+    Label bitRateLabel;
 
     Image image_sslRotary;
     Image image_bypass;

@@ -76,6 +76,8 @@ public:
     AudioParameterFloat* tremoloRate_param;
     AudioParameterInt* bitDepth_param;
     AudioParameterInt* bitRate_param;
+    AudioParameterInt* RLPFcutoff_param;
+    AudioParameterFloat* RLPFq_param;
     
     float ChannelLeftBuffer;
     float ChannelRightBuffer;
