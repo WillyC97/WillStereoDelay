@@ -15,6 +15,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "Filters.h"
+#include "LFO.h"
 
 
 
@@ -49,12 +50,7 @@ public:
     float next(float input, float channel, int i);
     float linInterp(float x1, float x2, float y1, float y2, float x);
 
-    float sampleRate;
-    float delayInSamples, fraction, delayInMs, MAX_DELAY_MS, wetLevel, feedback, crossFeedbackLevel;
-    float feedBackIn;
-    int bitDepth;
-    int rateDivide;
-    float HPass1, LPass1;
+    
     
    
     
@@ -68,27 +64,27 @@ public:
     
     
     //Tremolo Stuff
-    void updateAngleDelta();
-    void calculateTremolo();
-    void setTremoloRate(float rate);
-    float tremoloRate;
-    void setTremoloAmount(float amount);
-    float tremoloAmount;
-    
-    float tremoloMod;
-    float angleDelta;
-    float currentAngle{0.0};
-    float intervalsPerCycle;
-    //
+   
     
     void setPostPreMixToggle(int val);
     int postPreMix;
     
-private:
-    double BPM;
+    LFO tremolo;
     
+private:
     Filters HiPassFilter;
     Filters LowPassFilter;
+    
+    float sampleRate;
+    float delayInSamples, fraction, delayInMs, MAX_DELAY_MS, wetLevel, feedback, crossFeedbackLevel;
+    float feedBackIn;
+    int bitDepth;
+    int rateDivide;
+    float HPass1, LPass1;
+    
+    double BPM;
+    
+    
    
     
 };

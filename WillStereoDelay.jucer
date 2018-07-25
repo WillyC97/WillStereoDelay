@@ -38,6 +38,8 @@
             file="Source/DigitalDelayLine.h"/>
       <FILE id="REcoyt" name="Filters.cpp" compile="1" resource="0" file="Source/Filters.cpp"/>
       <FILE id="lJ2wn1" name="Filters.h" compile="0" resource="0" file="Source/Filters.h"/>
+      <FILE id="qyue5q" name="LFO.cpp" compile="1" resource="0" file="Source/LFO.cpp"/>
+      <FILE id="IO04a0" name="LFO.h" compile="0" resource="0" file="Source/LFO.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

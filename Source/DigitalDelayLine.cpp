@@ -152,14 +152,11 @@ float DigitalDelayLine::next(float input, float channel, int i)
     ///----------------------------------------------------------------- ///
     ///======================= Tremolo ================================= ///
     ///----------------------------------------------------------------- ///
-    calculateTremolo();
-    updateAngleDelta();
+//    calculateTremolo();
+    tremolo.updateAngleDelta(sampleRate);
     
     
-    if (currentAngle >= (2 *M_PI))
-    {
-        currentAngle -= (2 *M_PI);
-    }
+    
     ///----------------------------------------------------------------- ///
     ///================================================================= ///
     ///----------------------------------------------------------------- ///
@@ -193,17 +190,13 @@ float DigitalDelayLine::next(float input, float channel, int i)
     
     
     
-    //Filters
+    //Filters///////////////////////////////////////////
     LowPassFilter.calcFilterLPF(sampleRate, LPass1);
     HiPassFilter.calcFilterHPF(sampleRate, HPass1);
     
     yn = LowPassFilter.processChannelLPF(yn, channel);
     yn = HiPassFilter.processChannelHPF(yn, channel);
-    
-    
-//    yn = processChannelLPF(yn, channel);
-//    yn = processChannelHPF(yn, channel);
-    //Filters
+    //Filters///////////////////////////////////////////
     
     
     ///----------------------------------------------------------------- ///
@@ -226,7 +219,7 @@ float DigitalDelayLine::next(float input, float channel, int i)
     ///----------------------------------------------------------------- ///
     
     
-    
+    float tremoloMod = tremolo.calculateLFO();
     
     float outputBuffer = wetLevel*(yn*tremoloMod) + (1.0 - wetLevel)*xn;
     
@@ -287,28 +280,7 @@ void DigitalDelayLine::resetDelay()
 ///----------------------------------------------------------------- ///
 ///======================= Tremolo ====================== ///
 ///----------------------------------------------------------------- ///
-void DigitalDelayLine::setTremoloRate(float rate)
-{
-    tremoloRate = rate;
-}
 
-void DigitalDelayLine::setTremoloAmount(float amount)
-{
-    tremoloAmount = amount;
-}
-
-void DigitalDelayLine::updateAngleDelta()
-{
-    intervalsPerCycle = tremoloRate / sampleRate; //sinewave coeffcient generation for standard vibrato shape
-    angleDelta = intervalsPerCycle * (2 * M_PI);
-}
-
-void DigitalDelayLine::calculateTremolo()
-{
-    float offset = 1- tremoloAmount;
-    tremoloMod = (offset + tremoloAmount *(sin(currentAngle)));
-    currentAngle += angleDelta;
-}
 
 
 
